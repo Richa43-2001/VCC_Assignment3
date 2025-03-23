@@ -10,8 +10,8 @@ APP_DIR="myapp"
 PORT="8080"
 
 # Authenticate with GCP
-gcloud auth activate-service-account --key-file=assignment3-453515-fbe19fac364d.json
-gcloud config set project assignment3-453515
+gcloud auth activate-service-account --key-file=assgnment-3-vcc-21e0eed621a8.json
+gcloud config set project assgnment-3-vcc
 
 # Get CPU Usage
 CPU_USAGE=$(top -bn 1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
