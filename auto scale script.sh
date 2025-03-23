@@ -9,18 +9,14 @@ CPU_THRESHOLD=75
 APP_DIR="myapp"
 PORT="8080"
 
-# Authenticate with GCP
 gcloud auth activate-service-account --key-file=assgnment-3-vcc-21e0eed621a8.json
 gcloud config set project assgnment-3-vcc
 
-# Get CPU Usage
 CPU_USAGE=$(top -bn 1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
 echo "CPU Usage: $CPU_USAGE%"
 
-# Check if the VM exists in GCP
 INSTANCE_NAME=$(gcloud compute instance-groups managed list-instances scaled-vm-group --zone us-central1-a --format="value(name)" | head -n 1)
 
-# If CPU usage exceeds threshold and VM does not exist, create a new VM
 if (( $(echo "$CPU_USAGE > $CPU_THRESHOLD" | bc -l) )); then
     if [ -z "$INSTANCE_NAME" ]; then
         echo "CPU usage exceeded $CPU_THRESHOLD%. Creating a new VM in GCP..."
@@ -111,7 +107,6 @@ if (( $(echo "$CPU_USAGE > $CPU_THRESHOLD" | bc -l) )); then
             echo "GCP VM already exists. Skipping creation."
         fi
 
-# If CPU usage drops below threshold and VM exists, shut down the VM
 elif (( $(echo "$CPU_USAGE < $CPU_THRESHOLD" | bc -l) )); then
     if [ -n "$INSTANCE_NAME" ]; then
         echo "CPU usage dropped below $CPU_THRESHOLD%. Shutting down GCP VM..."
